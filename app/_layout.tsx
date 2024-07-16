@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
           } else if (route.name === 'GuideIngredientsScreen'){
             iconName = 'book-outline';
           } else if (route.name === 'CreditsScreen'){
-            iconName = 'call-outline';
+            iconName = 'code-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -45,7 +45,7 @@ const Layout: React.FC = () => {
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
       <Tab.Screen name="LiveStockScreen" component={LiveStockScreen} options={{ title: 'Live Stock' }} />
       <Tab.Screen name="GuideIngredientsScreen" component={GuideIngredientsScreen} options={{ title: 'Guides' }} />
-      <Tab.Screen name="CreditsScreen" component={CreditScreen} options={{ title: 'Credit' }} />
+      <Tab.Screen name="CreditsScreen" component={CreditScreen} options={{ title: 'Credits' }} />
     </Tab.Navigator>
   );
 };
