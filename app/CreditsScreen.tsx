@@ -12,7 +12,7 @@ const CreditScreen: React.FC = () => {
                 <View style={styles.row}>
                     <View style={styles.creditItem}>
                         <Text style={styles.creditTitle}>Project Lead</Text>
-                        <Text style={styles.creditName}>Apil, Diether Tom</Text>
+                        <Text style={styles.creditName}>Raguindin, Mark Lester</Text>
                     </View>
                     <View style={styles.creditItem}>
                         <Text style={styles.creditTitle}>Lead Developer & Designer</Text>
