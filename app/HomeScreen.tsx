@@ -81,7 +81,7 @@ const HomeScreen: React.FC = () => {
         </View>
       </Modal>
 
-      <Text style={styles.title2}>Error Encountered? Contact Us</Text>
+      <Text style={styles.title2}>Contact our Team</Text>
       <View style={styles.contactForm}>
         <View style={styles.formRow}>
           <TextInput
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: 20,
     paddingTop: 60,
-    backgroundColor: '#088395',
+    backgroundColor: 'rgba(12, 149, 180, 0.8)',
   },
   title: {
     fontSize: 15,

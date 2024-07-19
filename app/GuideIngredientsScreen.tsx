@@ -66,6 +66,7 @@ const GuideIngredients: React.FC = () => {
         </Text>
       </View>
 
+      <Text style={styles.ingredientsTitle}>Live Stock Ingredients</Text>
       <View style={styles.imageGrid}>
         {ingredients.map((ingredient, index) => (
           
@@ -100,14 +101,25 @@ const GuideIngredients: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    backgroundColor: 'rgba(12, 149, 180, 0.8)',
   },
   title: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '400',
     marginBottom: 20,
+    color: '#fff',
+  },
+  ingredientsTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#fff',
+    marginTop: 20,
   },
   sectionContainer: {
     backgroundColor: '#ffffff',
@@ -123,7 +135,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '500',
     marginTop: 10,
     marginBottom: 10,
     textAlign: 'center',
@@ -131,6 +143,7 @@ const styles = StyleSheet.create({
   paragraph: {
     fontSize: 16,
     marginBottom: 10,
+    marginTop: 10,
   },
   imageGrid: {
     flexDirection: 'row',

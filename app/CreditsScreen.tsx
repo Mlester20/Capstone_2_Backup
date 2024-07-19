@@ -12,7 +12,7 @@ const CreditScreen: React.FC = () => {
                 <View style={styles.row}>
                     <View style={styles.creditItem}>
                         <Text style={styles.creditTitle}>Project Lead</Text>
-                        <Text style={styles.creditName}>Raguindin, Mark Lester</Text>
+                        <Text style={styles.creditName}>Cunanan, Janet</Text>
                     </View>
                     <View style={styles.creditItem}>
                         <Text style={styles.creditTitle}>Lead Developer & Designer</Text>
@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
-        backgroundColor: '#eee',
         alignItems: 'center',
+        backgroundColor: 'rgba(12, 149, 180, 0.8)',
     },
     infoItem: {
         width: '100%',

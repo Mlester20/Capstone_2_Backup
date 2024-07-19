@@ -168,8 +168,8 @@ const LiveStockScreen: React.FC = () => {
               />
             </View>
             <View style={styles.buttonsContainer}>
-              <Button title="Calculate" onPress={calculateCrudeProtein} />
               <Button title="Reset" onPress={resetForm} />
+              <Button title="Calculate" onPress={calculateCrudeProtein} />
             </View>
           </>
         )}
@@ -200,15 +200,21 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(12, 149, 180, 0.8)',
   },
   container: {
     flex: 1,
     padding: 20,
   },
   label: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '400',
     marginBottom: 10,
+    color: '#fff',
+    marginTop: 30,
   },
   pickerContainer: {
     flexDirection: 'row',
@@ -222,8 +228,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   selectionLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: 16,
     marginBottom: 20,
+    color: '#fff',
+    marginTop: 30,
   },
   inputsContainer: {
     flexDirection: 'row',
@@ -232,15 +243,19 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#fff',
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8, 
+    color: '#000',  
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
+    backgroundColor: 'rgba (5.0, 109, 120, 0.8)',
   },
   modalContainer: {
     flex: 1,
