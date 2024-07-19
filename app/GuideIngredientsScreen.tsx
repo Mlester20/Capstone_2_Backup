@@ -13,7 +13,6 @@ const GuideIngredients: React.FC = () => {
     {
       name: 'Copra Meal',
       image: copraMeal,
-      description: 'Copra meal is derived from coconut meat. Rich in protein and fiber. Supports muscle development and overall health. Recommended quantity is 7kg for starter pigs. Available at most agricultural supply stores.',
       nutritionalContent: 'Protein: 20%, Fiber: 12%, Fat: 8%',
       livestock: 'Pigs, Poultry',
       fermentation: 'No fermentation required'
@@ -21,15 +20,12 @@ const GuideIngredients: React.FC = () => {
     {
       name: 'Soya',
       image: soya,
-      description: 'Soya is a leguminous plant known for its high protein content. Used as a source of protein in organic feed formulations. Available at most agricultural supply stores.',
-      nutritionalContent: 'Protein: 40%, Fiber: 20%, Fat: 5%',
       livestock: 'Pigs, Poultry, Cattle',
       fermentation: 'No fermentation required'
     },
     {
       name: 'Kangkong',
       image: kangkong,
-      description: 'Kangkong, also known as water spinach, is a leafy green vegetable rich in vitamins and minerals. Used as a nutritious component in livestock feed. Available at most markets and vegetable vendors.',
       nutritionalContent: 'Minerals: 15%, Vitamins: 10%, Fiber: 5%',
       livestock: 'Pigs, Poultry, Rabbits',
       fermentation: 'Fermentation recommended for higher nutrient absorption'

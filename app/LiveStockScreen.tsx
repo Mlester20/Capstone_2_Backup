@@ -26,17 +26,15 @@ const formulations: { [key in LivestockType]: any } = {
   Goat: GoatFormulations,
 };
 
+const ingredientsOptions = ['Rice bran', 'Copra meal', 'Soya meal', 'Greens', 'EM-1 Concentrate', 'Water'];
+
 const LiveStockScreen: React.FC = () => {
   const navigation = useNavigation();
   const [selectedLivestock, setSelectedLivestock] = useState<LivestockType | undefined>(undefined);
   const [selectedStage, setSelectedStage] = useState<string | undefined>(undefined);
   const [inputsEnabled, setInputsEnabled] = useState(false);
-  const [riceBran, setRiceBran] = useState('');
-  const [copraMeal, setCopraMeal] = useState('');
-  const [soyaMeal, setSoyaMeal] = useState('');
-  const [greens, setGreens] = useState('');
-  const [em1, setEm1] = useState('');
-  const [water, setWater] = useState('');
+  const [selectedIngredients, setSelectedIngredients] = useState<(string | undefined)[]>(Array(6).fill(undefined));
+  const [quantities, setQuantities] = useState<string[]>(Array(6).fill(''));
   const [crudeProtein, setCrudeProtein] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -45,17 +43,13 @@ const LiveStockScreen: React.FC = () => {
   const handleLivestockChange = (itemValue: LivestockType | undefined) => {
     setSelectedLivestock(itemValue);
     setSelectedStage(undefined); // Reset the stage when livestock changes
-    setInputsEnabled(false); // Disable form until both selections are made
+    setInputsEnabled(itemValue !== undefined && selectedStage !== undefined); // Enable form if both selections are made
     setCrudeProtein(null); // Reset crude protein calculation
   };
 
   const handleStageChange = (itemValue: string | undefined) => {
     setSelectedStage(itemValue);
-    if (selectedLivestock && itemValue) {
-      setInputsEnabled(true); // Enable form when both selections are made
-    } else {
-      setInputsEnabled(false); // Otherwise, keep form disabled
-    }
+    setInputsEnabled(selectedLivestock !== undefined && itemValue !== undefined); // Enable form if both selections are made
     setCrudeProtein(null); // Reset crude protein calculation
   };
 
@@ -63,14 +57,22 @@ const LiveStockScreen: React.FC = () => {
     setSelectedLivestock(undefined);
     setSelectedStage(undefined);
     setInputsEnabled(false);
-    setRiceBran('');
-    setCopraMeal('');
-    setSoyaMeal('');
-    setGreens('');
-    setEm1('');
-    setWater('');
+    setSelectedIngredients(Array(6).fill(undefined));
+    setQuantities(Array(6).fill(''));
     setCrudeProtein(null);
     setModalVisible(false);
+  };
+
+  const handleIngredientChange = (index: number, value: string | undefined) => {
+    const newSelectedIngredients = [...selectedIngredients];
+    newSelectedIngredients[index] = value;
+    setSelectedIngredients(newSelectedIngredients);
+  };
+
+  const handleQuantityChange = (index: number, value: string) => {
+    const newQuantities = [...quantities];
+    newQuantities[index] = value;
+    setQuantities(newQuantities);
   };
 
   const calculateCrudeProtein = () => {
@@ -78,15 +80,28 @@ const LiveStockScreen: React.FC = () => {
 
     const formulation = formulations[selectedLivestock][selectedStage];
 
-    const riceBranProtein = parseFloat(riceBran) * 0.12;
-    const copraMealProtein = parseFloat(copraMeal) * 0.22;
-    const soyaMealProtein = parseFloat(soyaMeal) * 0.45;
-    const greensProtein = parseFloat(greens) * 0.18;
-    const totalWeight = parseFloat(riceBran) + parseFloat(copraMeal) + parseFloat(soyaMeal) + parseFloat(greens);
+    const proteinPercentages: { [key: string]: number } = {
+      'Rice bran': 0.12,
+      'Copra meal': 0.22,
+      'Soya meal': 0.45,
+      'Greens': 0.18,
+      'EM-1 Concentrate': 0,
+      'Water': 0,
+    };
 
-    const totalProtein = riceBranProtein + copraMealProtein + soyaMealProtein + greensProtein;
+    let totalWeight = 0;
+    let totalProtein = 0;
+
+    for (let i = 0; i < selectedIngredients.length; i++) {
+      if (selectedIngredients[i]) {
+        const ingredientWeight = parseFloat(quantities[i]);
+        const proteinPercentage = proteinPercentages[selectedIngredients[i]!];
+        totalWeight += ingredientWeight;
+        totalProtein += ingredientWeight * proteinPercentage;
+      }
+    }
+
     const crudeProteinPercentage = (totalProtein / totalWeight) * 100;
-
     setCrudeProtein(crudeProteinPercentage);
     setModalVisible(true);
   };
@@ -117,62 +132,44 @@ const LiveStockScreen: React.FC = () => {
         <Text style={styles.selectionLabel}>
           Selected Live Stock: {selectedLivestock || 'None'}, Selected Stage: {selectedStage || 'None'}
         </Text>
-        {inputsEnabled && (
-          <>
-            <View style={styles.inputsContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Rice bran (kg)"
-                keyboardType="numeric"
-                value={riceBran}
-                onChangeText={setRiceBran}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Copra meal (kg)"
-                keyboardType="numeric"
-                value={copraMeal}
-                onChangeText={setCopraMeal}
-              />
+        <Text style={styles.label}>Step 1: Choose Organic Ingredients</Text>
+        <View style={styles.ingredientsContainer}>
+          {selectedIngredients.map((ingredient, index) => (
+            <View key={index} style={styles.ingredientRow}>
+              <Picker
+                selectedValue={ingredient}
+                onValueChange={(value) => handleIngredientChange(index, value)}
+                style={styles.ingredientPicker}
+                enabled={inputsEnabled}
+              >
+                <Picker.Item label="Select an ingredient" value={undefined} />
+                {ingredientsOptions
+                  .filter((option) => !selectedIngredients.includes(option) || option === ingredient)
+                  .map((option) => (
+                    <Picker.Item key={option} label={option} value={option} />
+                  ))}
+              </Picker>
             </View>
-            <View style={styles.inputsContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Soya meal (kg)"
-                keyboardType="numeric"
-                value={soyaMeal}
-                onChangeText={setSoyaMeal}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Greens (kg)"
-                keyboardType="numeric"
-                value={greens}
-                onChangeText={setGreens}
-              />
-            </View>
-            <View style={styles.inputsContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="EM-1 Concentrate (ml)"
-                keyboardType="numeric"
-                value={em1}
-                onChangeText={setEm1}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Water (liters)"
-                keyboardType="numeric"
-                value={water}
-                onChangeText={setWater}
-              />
-            </View>
-            <View style={styles.buttonsContainer}>
-              <Button title="Reset" onPress={resetForm} />
-              <Button title="Calculate" onPress={calculateCrudeProtein} />
-            </View>
-          </>
-        )}
+          ))}
+        </View>
+        <Text style={styles.label}>Step 2: Input Quantities (kg or ml)</Text>
+        <View style={styles.inputRow}>
+          {quantities.map((quantity, index) => (
+            <TextInput
+              key={index}
+              style={[styles.input, { backgroundColor: inputsEnabled ? 'white' : 'lightgray' }]}
+              placeholder={`Quantity for ${selectedIngredients[index] || 'ingredient'} (kg/ml)`}
+              keyboardType="numeric"
+              value={quantity}
+              onChangeText={(value) => handleQuantityChange(index, value)}
+              editable={inputsEnabled}
+            />
+          ))}
+        </View>
+        <View style={styles.buttonsContainer}>
+          <Button title="Reset" onPress={resetForm} />
+          <Button title="Calculate" onPress={calculateCrudeProtein} disabled={!inputsEnabled} />
+        </View>
         <Modal visible={modalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
@@ -180,10 +177,16 @@ const LiveStockScreen: React.FC = () => {
                 Calculated Crude Protein for {selectedLivestock} as {selectedStage}
               </Text>
               <Text style={styles.modalText}>Crude Protein: {crudeProtein?.toFixed(2)}%</Text>
-              <Text style={styles.modalTitle}>Procedure:</Text>
-              {selectedLivestock && selectedStage && formulations[selectedLivestock][selectedStage].procedure.map((step: string, index: number) => (
-                <Text key={index} style={styles.modalText}>{index + 1}. {step}</Text>
-              ))}
+              {selectedLivestock && selectedStage && formulations[selectedLivestock][selectedStage]?.procedure ? (
+                <>
+                  <Text style={styles.modalTitle}>Procedure:</Text>
+                  {formulations[selectedLivestock][selectedStage].procedure.map((step: string, index: number) => (
+                    <Text key={index} style={styles.modalText}>{index + 1}. {step}</Text>
+                  ))}
+                </>
+              ) : (
+                <Text style={styles.modalText}>No procedure available for the selected stage.</Text>
+              )}
               <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
                 <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
@@ -207,17 +210,16 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     fontSize: 18,
     fontWeight: '400',
     marginBottom: 10,
-    color: '#fff',
-    marginTop: 30,
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 20,
   },
   pickerContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   picker: {
@@ -228,46 +230,56 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   selectionLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     fontSize: 16,
     marginBottom: 20,
-    color: '#fff',
-    marginTop: 30,
+    color: 'white',
+    textAlign: 'center',
   },
-  inputsContainer: {
+  ingredientsContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  ingredientRow: {
+    width: '48%',
     marginBottom: 10,
+  },
+  ingredientPicker: {
+    height: 50,
+    width: '100%',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   input: {
     flex: 1,
     height: 40,
-    borderColor: '#fff',
+    borderColor: 'gray',
     borderWidth: 1,
-    marginRight: 10,
+    marginBottom: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    borderRadius: 8, 
-    color: '#000',  
+    marginHorizontal: 5,
+    backgroundColor: 'white',
+    color: 'black',
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    backgroundColor: 'rgba (5.0, 109, 120, 0.8)',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
+    width: '80%',
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
   },
   modalTitle: {
     fontSize: 18,
@@ -276,11 +288,11 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 10,
   },
   closeButton: {
     marginTop: 20,
-    backgroundColor: '#2196F3',
+    backgroundColor: 'gray',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
